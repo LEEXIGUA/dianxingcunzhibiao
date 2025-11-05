@@ -1,0 +1,2050 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>肇庆市第三批典型村督查调研系统</title>
+    <!-- 引入SheetJS库用于导出Excel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c7a3e;
+            --secondary-color: #4caf50;
+            --accent-color: #8bc34a;
+            --light-color: #e8f5e9;
+            --dark-color: #1b5e20;
+            --danger-color: #f44336;
+            --warning-color: #ff9800;
+            --success-color: #4caf50;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px 0;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .card-title {
+            font-size: 20px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-color);
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 2px rgba(139, 195, 74, 0.2);
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background: var(--dark-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .btn-secondary {
+            background: #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+        
+        .score-display {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--light-color);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+        }
+        
+        .total-score {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .score-details {
+            font-size: 16px;
+        }
+        
+        .category-section {
+            margin-bottom: 30px;
+        }
+        
+        .category-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 10px 15px;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .category-body {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 var(--border-radius) var(--border-radius);
+        }
+        
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .score-item:last-child {
+            border-bottom: none;
+        }
+        
+        .score-name {
+            flex: 1;
+        }
+        
+        .score-value {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            margin-right: 5px;
+        }
+        
+        .tab.active {
+            background: white;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .progress-bar {
+            height: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .progress {
+            height: 100%;
+            background: var(--success-color);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+        
+        .result-section {
+            margin-top: 30px;
+        }
+        
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        
+        .summary-table th, .summary-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .summary-table th {
+            background: var(--light-color);
+            color: var(--dark-color);
+            font-weight: bold;
+        }
+        
+        .summary-table tr:hover {
+            background: #f9f9f9;
+        }
+        
+        /* 图片上传样式 */
+        .image-upload-section {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: var(--border-radius);
+            border: 1px dashed #ddd;
+        }
+        
+        .image-upload-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .image-upload-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+        
+        .image-upload-item {
+            position: relative;
+            width: 100%;
+            height: 150px;
+            border: 2px dashed #ccc;
+            border-radius: var(--border-radius);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .image-upload-item:hover {
+            border-color: var(--accent-color);
+        }
+        
+        .image-upload-item input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        
+        .image-upload-icon {
+            font-size: 40px;
+            color: #ccc;
+        }
+        
+        .image-upload-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .image-upload-item .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .image-upload-item:hover .remove-btn {
+            opacity: 1;
+        }
+        
+        /* 新增样式 */
+        .text-input-section {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: var(--border-radius);
+        }
+        
+        .text-input-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        .summary-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f9f9f9;
+            border-radius: var(--border-radius);
+        }
+        
+        .summary-section h3 {
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .score-display {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .total-score {
+                margin-bottom: 10px;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab {
+                flex: 1;
+                min-width: 120px;
+                text-align: center;
+                margin-bottom: 5px;
+            }
+            
+            .image-upload-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>肇庆市第三批典型村督查调研系统</h1>
+        </header>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="basic">基本信息</div>
+            <div class="tab" data-tab="environment">环境整治</div>
+            <div class="tab" data-tab="livability">村庄宜居</div>
+            <div class="tab" data-tab="service">服务配套</div>
+            <div class="tab" data-tab="culture">文明乡风</div>
+            <div class="tab" data-tab="governance">乡村治理</div>
+            <div class="tab" data-tab="industry">产业发展</div>
+            <div class="tab" data-tab="result">评分结果</div>
+        </div>
+        
+        <form id="scoringForm">
+            <!-- 基本信息 -->
+            <div class="tab-content active" id="basic-tab">
+                <div class="card">
+                    <h2 class="card-title">村庄基本信息</h2>
+                    
+                    <div class="form-group">
+                        <label for="county">县（区）名称</label>
+                        <input type="text" id="county" name="county" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="town">镇名称</label>
+                        <input type="text" id="town" name="town" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="village">行政村名称</label>
+                        <input type="text" id="village" name="village" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="natural_villages">下辖自然村数（个）</label>
+                        <input type="number" id="natural_villages" name="natural_villages" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="villager_groups">下辖村民小组数（个）</label>
+                        <input type="number" id="villager_groups" name="villager_groups" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="area">行政村面积（k㎡）</label>
+                        <input type="number" id="area" name="area" step="0.01" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="household_pop">户籍人口（人）</label>
+                        <input type="number" id="household_pop" name="household_pop" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="resident_pop">常住人口（人）</label>
+                        <input type="number" id="resident_pop" name="resident_pop" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="income">村集体经济收入（万元）</label>
+                        <input type="number" id="income" name="income" step="0.1" min="0" required>
+                    </div>
+                    
+                    <button type="button" class="btn btn-block next-tab" data-next="environment">下一步：环境整治</button>
+                </div>
+            </div>
+            
+            <!-- 环境整治 -->
+            <div class="tab-content" id="environment-tab">
+                <div class="card">
+                    <h2 class="card-title">环境整治</h2>
+                    
+                    <div class="category-section">
+                        <div class="category-header">三清理</div>
+                        <div class="category-body">
+                            <div class="form-group">
+                                <label for="lane_problems">村内巷道问题数量</label>
+                                <input type="number" id="lane_problems" name="lane_problems" min="0" value="0">
+                                <small>村内巷道无乱堆乱放，无乱搭乱建、无村容村貌的窝棚、杂物棚</small>
+                                
+                                <!-- 图片上传区域 -->
+                                <div class="image-upload-section">
+                                    <div class="image-upload-title">上传村内巷道图片（最多5张）</div>
+                                    <div class="image-upload-grid" id="lane-images">
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="lane">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="lane">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="lane">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="lane">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="lane">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="surrounding_problems">四旁五边问题数量</label>
+                                <input type="number" id="surrounding_problems" name="surrounding_problems" min="0" value="0">
+                                <small>四旁五边无杂草杂物，无积存垃圾</small>
+                                
+                                <!-- 图片上传区域 -->
+                                <div class="image-upload-section">
+                                    <div class="image-upload-title">上传四旁五边图片（最多5张）</div>
+                                    <div class="image-upload-grid" id="surrounding-images">
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="surrounding">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="surrounding">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="surrounding">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="surrounding">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="surrounding">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="ditch_problems">沟渠池塘问题数量</label>
+                                <input type="number" id="ditch_problems" name="ditch_problems" min="0" value="0">
+                                <small>沟渠池塘溪河排水沟无淤泥、漂浮物和障碍物</small>
+                                
+                                <!-- 图片上传区域 -->
+                                <div class="image-upload-section">
+                                    <div class="image-upload-title">上传沟渠池塘图片（最多5张）</div>
+                                    <div class="image-upload-grid" id="ditch-images">
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="ditch">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="ditch">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="ditch">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="ditch">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="ditch">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="category-section">
+                        <div class="category-header">四整治</div>
+                        <div class="category-body">
+                            <div class="form-group">
+                                <label for="garbage_problems">垃圾处理问题数量</label>
+                                <input type="number" id="garbage_problems" name="garbage_problems" min="0" value="0">
+                                <small>无乱堆乱倒垃圾，生活垃圾收集点干净整洁，无就地焚烧现象</small>
+                                
+                                <!-- 图片上传区域 -->
+                                <div class="image-upload-section">
+                                    <div class="image-upload-title">上传垃圾处理图片（最多5张）</div>
+                                    <div class="image-upload-grid" id="garbage-images">
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="garbage">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="garbage">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="garbage">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="garbage">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="garbage">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="sewage_facility">生活污水处理设施是否正常运行</label>
+                                <select id="sewage_facility" name="sewage_facility">
+                                    <option value="true">是</option>
+                                    <option value="false">否</option>
+                                </select>
+                                
+                                <!-- 图片上传区域 -->
+                                <div class="image-upload-section">
+                                    <div class="image-upload-title">上传污水处理设施图片（最多5张）</div>
+                                    <div class="image-upload-grid" id="sewage-images">
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="sewage">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="sewage">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="sewage">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="sewage">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="sewage">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="sewage_three_basic">是否实现"三基本"</label>
+                                <select id="sewage_three_basic" name="sewage_three_basic">
+                                    <option value="true">是</option>
+                                    <option value="false">否</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="sewage_black_water">是否存在黑臭水体</label>
+                                <select id="sewage_black_water" name="sewage_black_water">
+                                    <option value="false">否</option>
+                                    <option value="true">是</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="toilet_problems">厕所问题数量</label>
+                                <input type="number" id="toilet_problems" name="toilet_problems" min="0" value="0">
+                                <small>不存在问题厕所</small>
+                                
+                                <!-- 图片上传区域 -->
+                                <div class="image-upload-section">
+                                    <div class="image-upload-title">上传厕所图片（最多5张）</div>
+                                    <div class="image-upload-grid" id="toilet-images">
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="toilet">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="toilet">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="toilet">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="toilet">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="toilet">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="wire_problems">管线规整问题数量</label>
+                                <input type="number" id="wire_problems" name="wire_problems" min="0" value="0">
+                                <small>电力线、通信线和广播电视线等管线规整规范</small>
+                                
+                                <!-- 图片上传区域 -->
+                                <div class="image-upload-section">
+                                    <div class="image-upload-title">上传管线规整图片（最多5张）</div>
+                                    <div class="image-upload-grid" id="wire-images">
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="wire">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="wire">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="wire">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="wire">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                        <div class="image-upload-item">
+                                            <input type="file" accept="image/*" class="image-upload-input" data-category="wire">
+                                            <div class="image-upload-icon">+</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="button" class="btn btn-secondary prev-tab" data-prev="basic">上一步</button>
+                        <button type="button" class="btn next-tab" data-next="livability">下一步：村庄宜居</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 村庄宜居 -->
+            <div class="tab-content" id="livability-tab">
+                <div class="card">
+                    <h2 class="card-title">村庄宜居</h2>
+                    
+                    <div class="form-group">
+                        <label for="planning_count">具备的规划数量</label>
+                        <select id="planning_count" name="planning_count">
+                            <option value="0">0个</option>
+                            <option value="1">1个</option>
+                            <option value="2">2个</option>
+                            <option value="3">3个</option>
+                        </select>
+                        <small>统筹做好乡村布局规划、村庄建设规划、农房风貌规划并严格执行</small>
+                        
+                        <!-- 图片上传区域 -->
+                        <div class="image-upload-section">
+                            <div class="image-upload-title">上传规划引领相关图片（最多5张）</div>
+                            <div class="image-upload-grid" id="planning-images">
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="planning">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="planning">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="planning">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="planning">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="planning">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="house_control_public">是否落实"五公开"</label>
+                        <select id="house_control_public" name="house_control_public">
+                            <option value="true">是</option>
+                            <option value="false">否</option>
+                        </select>
+                        
+                        <!-- 图片上传区域 -->
+                        <div class="image-upload-section">
+                            <div class="image-upload-title">上传新建农房管控相关图片（最多5张）</div>
+                            <div class="image-upload-grid" id="house-control-images">
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="house_control">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="house_control">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="house_control">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="house_control">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="house_control">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="house_control_onsite">是否落实"五到场"</label>
+                        <select id="house_control_onsite" name="house_control_onsite">
+                            <option value="true">是</option>
+                            <option value="false">否</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="house_control_sign">是否落实"施工挂牌"</label>
+                        <select id="house_control_sign" name="house_control_sign">
+                            <option value="true">是</option>
+                            <option value="false">否</option>
+                        </select>
+                        <small>新建农房落实"五公开""五到场""施工挂牌"制度</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="house_style_rate">农房风貌提升比例</label>
+                        <input type="number" id="house_style_rate" name="house_style_rate" min="0" max="100" step="1" value="0">
+                        <small>一个及以上的自然村或主要交通要道沿线、主要河流沿线和旅游景区周边的村庄农房风貌已经实现整体提升的比例(%)</small>
+                        <div class="progress-bar">
+                            <div class="progress" id="house_style_progress" style="width: 0%"></div>
+                        </div>
+                        
+                        <!-- 图片上传区域 -->
+                        <div class="image-upload-section">
+                            <div class="image-upload-title">上传农房风貌相关图片（最多5张）</div>
+                            <div class="image-upload-grid" id="house-style-images">
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="house_style">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="house_style">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="house_style">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="house_style">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="house_style">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="greening_problems">绿化美化问题数量</label>
+                        <input type="number" id="greening_problems" name="greening_problems" min="0" value="0">
+                        <small>村庄"四旁""五边"和公共场所开展绿化美化，村庄绿化"五个一"活动至少选择两种及以上建设</small>
+                        
+                        <!-- 图片上传区域 -->
+                        <div class="image-upload-section">
+                            <div class="image-upload-title">上传绿化美化相关图片（最多5张）</div>
+                            <div class="image-upload-grid" id="greening-images">
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="greening">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="greening">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="greening">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="greening">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="greening">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="resource_problems">资源保护问题数量</label>
+                        <input type="number" id="resource_problems" name="resource_problems" min="0" value="0">
+                        <small>自然资源得到保护和修复。撂荒耕地复耕复种</small>
+                        
+                        <!-- 图片上传区域 -->
+                        <div class="image-upload-section">
+                            <div class="image-upload-title">上传资源保护相关图片（最多5张）</div>
+                            <div class="image-upload-grid" id="resource-images">
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="resource">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="resource">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="resource">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="resource">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="resource">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="button" class="btn btn-secondary prev-tab" data-prev="environment">上一步</button>
+                        <button type="button" class="btn next-tab" data-next="service">下一步：服务配套</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 服务配套 -->
+            <div class="tab-content" id="service-tab">
+                <div class="card">
+                    <h2 class="card-title">服务配套</h2>
+                    
+                    <div class="form-group">
+                        <label for="road_problems">道路问题数量</label>
+                        <input type="number" id="road_problems" name="road_problems" min="0" value="0">
+                        <small>行政村道路提升改善，自然村落实公路硬底化</small>
+                        
+                        <!-- 图片上传区域 -->
+                        <div class="image-upload-section">
+                            <div class="image-upload-title">上传道路相关图片（最多5张）</div>
+                            <div class="image-upload-grid" id="road-images">
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="road">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="road">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="road">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="road">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="road">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="water_problems">供水问题数量</label>
+                        <input type="number" id="water_problems" name="water_problems" min="0" value="0">
+                        <small>集中式供水工程覆盖行政村，饮用水常年稳定供应、水质符合标准</small>
+                        
+                        <!-- 图片上传区域 -->
+                        <div class="image-upload-section">
+                            <div class="image-upload-title">上传供水相关图片（最多5张）</div>
+                            <div class="image-upload-grid" id="water-images">
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="water">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="water">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="water">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="water">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="water">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="power_stable">供电是否稳定可靠</label>
+                        <select id="power_stable" name="power_stable">
+                            <option value="true">是</option>
+                            <option value="false">否</option>
+                        </select>
+                        
+                        <!-- 图片上传区域 -->
+                        <div class="image-upload-section">
+                            <div class="image-upload-title">上传供电相关图片（最多5张）</div>
+                            <div class="image-upload-grid" id="power-images">
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="power">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="power">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="power">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="power">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="power">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="charging_pile">是否建设新能源充电桩</label>
+                        <select id="charging_pile" name="charging_pile">
+                            <option value="true">是</option>
+                            <option value="false">否</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="button" class="btn btn-secondary prev-tab" data-prev="livability">上一步</button>
+                        <button type="button" class="btn next-tab" data-next="culture">下一步：文明乡风</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 文明乡风 -->
+            <div class="tab-content" id="culture-tab">
+                <div class="card">
+                    <h2 class="card-title">文明乡风</h2>
+                    
+                    <div class="form-group">
+                        <label for="village_rules">文明乡风是否纳入村规民约</label>
+                        <select id="village_rules" name="village_rules">
+                            <option value="true">是</option>
+                            <option value="false">否</option>
+                        </select>
+                        
+                        <!-- 图片上传区域 -->
+                        <div class="image-upload-section">
+                            <div class="image-upload-title">上传村规民约相关图片（最多5张）</div>
+                            <div class="image-upload-grid" id="village-rules-images">
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="village_rules">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="village_rules">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="village_rules">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="village_rules">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="village_rules">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="culture_space_problems">乡村文化空间闲置问题数量</label>
+                        <input type="number" id="culture_space_problems" name="culture_space_problems" min="0" value="0">
+                        <small>乡村文化空间规范运行并常态化开展活动</small>
+                        
+                        <!-- 图片上传区域 -->
+                        <div class="image-upload-section">
+                            <div class="image-upload-title">上传乡村文化空间相关图片（最多5张）</div>
+                            <div class="image-upload-grid" id="culture-space-images">
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="culture_space">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="culture_space">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="culture_space">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="culture_space">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="culture_space">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="button" class="btn btn-secondary prev-tab" data-prev="service">上一步</button>
+                        <button type="button" class="btn next-tab" data-next="governance">下一步：乡村治理</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 乡村治理 -->
+            <div class="tab-content" id="governance-tab">
+                <div class="card">
+                    <h2 class="card-title">乡村治理</h2>
+                    
+                    <div class="form-group">
+                        <label for="three_public">党务、村务、财务是否全部公开</label>
+                        <select id="three_public" name="three_public">
+                            <option value="true">是</option>
+                            <option value="false">否</option>
+                        </select>
+                        
+                        <!-- 图片上传区域 -->
+                        <div class="image-upload-section">
+                            <div class="image-upload-title">上传三务公开相关图片（最多5张）</div>
+                            <div class="image-upload-grid" id="three-public-images">
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="three_public">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="three_public">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="three_public">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="three_public">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="three_public">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="disaster_facility">是否建有减灾救灾避灾场所设施</label>
+                        <select id="disaster_facility" name="disaster_facility">
+                            <option value="true">是</option>
+                            <option value="false">否</option>
+                        </select>
+                        
+                        <!-- 图片上传区域 -->
+                        <div class="image-upload-section">
+                            <div class="image-upload-title">上传减灾救灾避灾场所相关图片（最多5张）</div>
+                            <div class="image-upload-grid" id="disaster-images">
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="disaster">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="disaster">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="disaster">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="disaster">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="disaster">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="button" class="btn btn-secondary prev-tab" data-prev="culture">上一步</button>
+                        <button type="button" class="btn next-tab" data-next="industry">下一步：产业发展</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 产业发展 -->
+            <div class="tab-content" id="industry-tab">
+                <div class="card">
+                    <h2 class="card-title">产业发展</h2>
+                    
+                    <div class="form-group">
+                        <label for="industry_level">特色产业发展水平</label>
+                        <select id="industry_level" name="industry_level">
+                            <option value="成熟">成熟</option>
+                            <option value="发展中">发展中</option>
+                            <option value="计划中">计划中</option>
+                        </select>
+                        <small>合理利用当地自然资源和生态条件，发展乡村特色优势产业</small>
+                        
+                        <!-- 文字输入区域 -->
+                        <div class="text-input-section">
+                            <div class="text-input-title">特色产业详细说明</div>
+                            <textarea id="industry_description" name="industry_description" rows="4" placeholder="请详细描述特色产业发展情况..."></textarea>
+                        </div>
+                        
+                        <!-- 图片上传区域 -->
+                        <div class="image-upload-section">
+                            <div class="image-upload-title">上传特色产业相关图片（最多5张）</div>
+                            <div class="image-upload-grid" id="industry-images">
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="industry">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="industry">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="industry">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="industry">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="industry">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="resource_level">资源资产盘活水平</label>
+                        <select id="resource_level" name="resource_level">
+                            <option value="成熟">成熟</option>
+                            <option value="进行中">进行中</option>
+                            <option value="未开展">未开展</option>
+                        </select>
+                        <small>对村内清拆后土地利用、村内闲置校舍活化利用</small>
+                        
+                        <!-- 文字输入区域 -->
+                        <div class="text-input-section">
+                            <div class="text-input-title">资源资产盘活详细说明</div>
+                            <textarea id="resource_activation_description" name="resource_activation_description" rows="4" placeholder="请详细描述资源资产盘活情况..."></textarea>
+                        </div>
+                        
+                        <!-- 图片上传区域 -->
+                        <div class="image-upload-section">
+                            <div class="image-upload-title">上传资源资产盘活相关图片（最多5张）</div>
+                            <div class="image-upload-grid" id="resource-activation-images">
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="resource_activation">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="resource_activation">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="resource_activation">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="resource_activation">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="resource_activation">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="service_coverage">产业服务覆盖项目数量</label>
+                        <select id="service_coverage" name="service_coverage">
+                            <option value="0">0个</option>
+                            <option value="1">1个</option>
+                            <option value="2">2个</option>
+                            <option value="3">3个</option>
+                        </select>
+                        <small>特派员、乡土专家、双百行动、千企帮千镇万企兴万村相关服务覆盖到行政村</small>
+                        
+                        <!-- 文字输入区域 -->
+                        <div class="text-input-section">
+                            <div class="text-input-title">产业服务详细说明</div>
+                            <textarea id="industry_service_description" name="industry_service_description" rows="4" placeholder="请详细描述产业服务情况..."></textarea>
+                        </div>
+                        
+                        <!-- 图片上传区域 -->
+                        <div class="image-upload-section">
+                            <div class="image-upload-title">上传产业服务相关图片（最多5张）</div>
+                            <div class="image-upload-grid" id="industry-service-images">
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="industry_service">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="industry_service">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="industry_service">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="industry_service">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                                <div class="image-upload-item">
+                                    <input type="file" accept="image/*" class="image-upload-input" data-category="industry_service">
+                                    <div class="image-upload-icon">+</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="button" class="btn btn-secondary prev-tab" data-prev="governance">上一步</button>
+                        <button type="button" class="btn" id="calculateScore">计算评分</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 评分结果 -->
+            <div class="tab-content" id="result-tab">
+                <div class="card">
+                    <h2 class="card-title">评分结果</h2>
+                    
+                    <div class="score-display">
+                        <div class="total-score" id="totalScore">0/100</div>
+                        <div class="score-details">
+                            <div>得分率: <span id="scoreRate">0%</span></div>
+                            <div>评价等级: <span id="scoreGrade">未评价</span></div>
+                        </div>
+                    </div>
+                    
+                    <div class="progress-bar">
+                        <div class="progress" id="totalProgress" style="width: 0%"></div>
+                    </div>
+                    
+                    <div class="result-section">
+                        <h3>评分详情</h3>
+                        <div id="scoreDetails"></div>
+                    </div>
+                    
+                    <!-- 特色总结输入框 -->
+                    <div class="summary-section">
+                        <h3>特色总结</h3>
+                        <textarea id="feature_summary" name="feature_summary" rows="6" placeholder="请总结该村在人居环境、资源特色、产业发展、机制体制等方面的特色亮点..."></textarea>
+                    </div>
+                    
+                    <!-- 阶段性问题反馈输入框 -->
+                    <div class="summary-section">
+                        <h3>阶段性问题反馈</h3>
+                        <textarea id="problem_feedback" name="problem_feedback" rows="6" placeholder="请列出督查调研中发现的阶段性问题及改进建议..."></textarea>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 20px;">
+                        <button type="button" class="btn btn-secondary" id="resetForm">重新填写</button>
+                        <button type="button" class="btn" id="exportResult">导出Excel</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // 评分权重配置
+        const scoreWeights = {
+            // 基本概况
+            resident_population: 5,
+            income: 5,
+            
+            // 环境整治 - 三清理
+            lane_problems: 3,
+            surrounding_problems: 3,
+            ditch_problems: 3,
+            
+            // 环境整治 - 四整治
+            garbage_problems: 3,
+            sewage: 6,
+            toilet_problems: 3,
+            wire_problems: 3,
+            
+            // 村庄宜居
+            planning: 4,
+            house_control: 4,
+            house_style: 4,
+            greening: 4,
+            resource_protection: 4,
+            
+            // 服务配套
+            road: 4,
+            water: 4,
+            power: 2,
+            
+            // 文明乡风
+            village_rules: 3,
+            culture_space: 4,
+            
+            // 乡村治理
+            three_public: 2,
+            disaster_facility: 2,
+            
+            // 产业发展
+            industry: 10,
+            resource_activation: 5,
+            industry_service: 10
+        };
+
+        // 存储上传的图片
+        const uploadedImages = {
+            // 环境整治
+            lane: [],
+            surrounding: [],
+            ditch: [],
+            garbage: [],
+            sewage: [],
+            toilet: [],
+            wire: [],
+            
+            // 村庄宜居
+            planning: [],
+            house_control: [],
+            house_style: [],
+            greening: [],
+            resource: [],
+            
+            // 服务配套
+            road: [],
+            water: [],
+            power: [],
+            
+            // 文明乡风
+            village_rules: [],
+            culture_space: [],
+            
+            // 乡村治理
+            three_public: [],
+            disaster: [],
+            
+            // 产业发展
+            industry: [],
+            resource_activation: [],
+            industry_service: []
+        };
+
+        // 评分计算函数
+        function calculateResidentPopulationScore(residentPop, householdPop) {
+            return residentPop >= householdPop ? 5 : 0;
+        }
+
+        function calculateIncomeScore(income) {
+            if (income >= 20) return 5;
+            if (income >= 17) return 3;
+            return 0;
+        }
+
+        function calculateProblemScore(problemCount, fullScore, threshold) {
+            if (problemCount === 0) return fullScore;
+            if (problemCount <= threshold) return 1;
+            return 0;
+        }
+
+        function calculateSewageScore(facilityNormal, threeBasic, blackWater) {
+            if (facilityNormal && !blackWater) return 6;
+            if (facilityNormal && threeBasic && blackWater) return 3;
+            if (!facilityNormal && blackWater) return 0;
+            return 0;
+        }
+
+        function calculatePlanningScore(plansCount) {
+            if (plansCount === 3) return 4;
+            if (plansCount === 2) return 2;
+            if (plansCount === 1) return 1;
+            return 0;
+        }
+
+        function calculateHouseControlScore(fivePublic, fiveOnsite, constructionSign) {
+            if (fivePublic && fiveOnsite && constructionSign) return 4;
+            if (fivePublic && fiveOnsite) return 2;
+            return 0;
+        }
+
+        function calculateHouseStyleScore(improvementRate) {
+            if (improvementRate >= 80) return 4;
+            if (improvementRate > 50) return 2;
+            return 0;
+        }
+
+        function calculateIndustryScore(industryLevel) {
+            if (industryLevel === "成熟") return 10;
+            if (industryLevel === "发展中") return 8;
+            if (industryLevel === "计划中") return 5;
+            return 0;
+        }
+
+        function calculateResourceScore(utilizationLevel) {
+            if (utilizationLevel === "成熟") return 5;
+            if (utilizationLevel === "进行中") return 3;
+            return 0;
+        }
+
+        function calculateServiceScore(coverageCount) {
+            if (coverageCount === 3) return 10;
+            if (coverageCount === 2) return 5;
+            if (coverageCount === 1) return 3;
+            return 0;
+        }
+
+        // 计算总分
+        function calculateTotalScore() {
+            const formData = new FormData(document.getElementById('scoringForm'));
+            const data = Object.fromEntries(formData.entries());
+            
+            // 转换数据类型
+            data.natural_villages = parseInt(data.natural_villages);
+            data.villager_groups = parseInt(data.villager_groups);
+            data.area = parseFloat(data.area);
+            data.household_pop = parseInt(data.household_pop);
+            data.resident_pop = parseInt(data.resident_pop);
+            data.income = parseFloat(data.income);
+            data.lane_problems = parseInt(data.lane_problems);
+            data.surrounding_problems = parseInt(data.surrounding_problems);
+            data.ditch_problems = parseInt(data.ditch_problems);
+            data.garbage_problems = parseInt(data.garbage_problems);
+            data.sewage_facility = data.sewage_facility === 'true';
+            data.sewage_three_basic = data.sewage_three_basic === 'true';
+            data.sewage_black_water = data.sewage_black_water === 'true';
+            data.toilet_problems = parseInt(data.toilet_problems);
+            data.wire_problems = parseInt(data.wire_problems);
+            data.planning_count = parseInt(data.planning_count);
+            data.house_control_public = data.house_control_public === 'true';
+            data.house_control_onsite = data.house_control_onsite === 'true';
+            data.house_control_sign = data.house_control_sign === 'true';
+            data.house_style_rate = parseInt(data.house_style_rate);
+            data.greening_problems = parseInt(data.greening_problems);
+            data.resource_problems = parseInt(data.resource_problems);
+            data.road_problems = parseInt(data.road_problems);
+            data.water_problems = parseInt(data.water_problems);
+            data.power_stable = data.power_stable === 'true';
+            data.charging_pile = data.charging_pile === 'true';
+            data.village_rules = data.village_rules === 'true';
+            data.culture_space_problems = parseInt(data.culture_space_problems);
+            data.three_public = data.three_public === 'true';
+            data.disaster_facility = data.disaster_facility === 'true';
+            data.service_coverage = parseInt(data.service_coverage);
+            
+            // 计算各项得分
+            const scores = {
+                // 基本概况
+                resident_population: calculateResidentPopulationScore(data.resident_pop, data.household_pop),
+                income: calculateIncomeScore(data.income),
+                
+                // 环境整治 - 三清理
+                lane_problems: calculateProblemScore(data.lane_problems, 3, 5),
+                surrounding_problems: calculateProblemScore(data.surrounding_problems, 3, 5),
+                ditch_problems: calculateProblemScore(data.ditch_problems, 3, 5),
+                
+                // 环境整治 - 四整治
+                garbage_problems: calculateProblemScore(data.garbage_problems, 3, 3),
+                sewage: calculateSewageScore(data.sewage_facility, data.sewage_three_basic, data.sewage_black_water),
+                toilet_problems: calculateProblemScore(data.toilet_problems, 3, 2),
+                wire_problems: calculateProblemScore(data.wire_problems, 3, 5),
+                
+                // 村庄宜居
+                planning: calculatePlanningScore(data.planning_count),
+                house_control: calculateHouseControlScore(data.house_control_public, data.house_control_onsite, data.house_control_sign),
+                house_style: calculateHouseStyleScore(data.house_style_rate),
+                greening: calculateProblemScore(data.greening_problems, 4, 5),
+                resource_protection: calculateProblemScore(data.resource_problems, 4, 2),
+                
+                // 服务配套
+                road: calculateProblemScore(data.road_problems, 4, 2),
+                water: calculateProblemScore(data.water_problems, 4, 2),
+                power: (data.power_stable && data.charging_pile) ? 2 : 0,
+                
+                // 文明乡风
+                village_rules: data.village_rules ? 3 : 0,
+                culture_space: calculateProblemScore(data.culture_space_problems, 4, 2),
+                
+                // 乡村治理
+                three_public: data.three_public ? 2 : 0,
+                disaster_facility: data.disaster_facility ? 2 : 0,
+                
+                // 产业发展
+                industry: calculateIndustryScore(data.industry_level),
+                resource_activation: calculateResourceScore(data.resource_level),
+                industry_service: calculateServiceScore(data.service_coverage)
+            };
+            
+            return scores;
+        }
+
+        // 显示评分结果
+        function displayScoreResults(scores) {
+            // 计算总分
+            let totalScore = 0;
+            let totalWeight = 0;
+            
+            for (const [key, score] of Object.entries(scores)) {
+                totalScore += score;
+                totalWeight += scoreWeights[key];
+            }
+            
+            // 更新总分显示
+            document.getElementById('totalScore').textContent = `${totalScore}/${totalWeight}`;
+            
+            // 计算得分率
+            const scoreRate = (totalScore / totalWeight * 100).toFixed(1);
+            document.getElementById('scoreRate').textContent = `${scoreRate}%`;
+            
+            // 更新进度条
+            document.getElementById('totalProgress').style.width = `${scoreRate}%`;
+            
+            // 评价等级
+            let grade = '';
+            if (scoreRate >= 90) grade = '优秀';
+            else if (scoreRate >= 80) grade = '良好';
+            else if (scoreRate >= 70) grade = '中等';
+            else if (scoreRate >= 60) grade = '及格';
+            else grade = '不及格';
+            
+            document.getElementById('scoreGrade').textContent = grade;
+            
+            // 显示详细评分
+            const scoreDetails = document.getElementById('scoreDetails');
+            scoreDetails.innerHTML = '';
+            
+            // 按类别分组显示
+            const categories = {
+                '基本概况': ['resident_population', 'income'],
+                '环境整治-三清理': ['lane_problems', 'surrounding_problems', 'ditch_problems'],
+                '环境整治-四整治': ['garbage_problems', 'sewage', 'toilet_problems', 'wire_problems'],
+                '村庄宜居': ['planning', 'house_control', 'house_style', 'greening', 'resource_protection'],
+                '服务配套': ['road', 'water', 'power'],
+                '文明乡风': ['village_rules', 'culture_space'],
+                '乡村治理': ['three_public', 'disaster_facility'],
+                '产业发展': ['industry', 'resource_activation', 'industry_service']
+            };
+            
+            const scoreLabels = {
+                resident_population: '常住人口比较',
+                income: '村集体经济收入',
+                lane_problems: '村内巷道',
+                surrounding_problems: '四旁五边',
+                ditch_problems: '沟渠池塘',
+                garbage_problems: '垃圾处理',
+                sewage: '污水处理',
+                toilet_problems: '厕所',
+                wire_problems: '管线规整',
+                planning: '规划引领',
+                house_control: '新建农房管控',
+                house_style: '农房风貌',
+                greening: '绿化美化',
+                resource_protection: '资源保护',
+                road: '道路',
+                water: '供水',
+                power: '供电',
+                village_rules: '村规民约',
+                culture_space: '乡村文化空间',
+                three_public: '三务公开',
+                disaster_facility: '减灾救灾',
+                industry: '特色产业',
+                resource_activation: '资源资产盘活',
+                industry_service: '产业服务'
+            };
+            
+            for (const [category, items] of Object.entries(categories)) {
+                const categoryDiv = document.createElement('div');
+                categoryDiv.className = 'category-section';
+                
+                const header = document.createElement('div');
+                header.className = 'category-header';
+                header.textContent = category;
+                categoryDiv.appendChild(header);
+                
+                const body = document.createElement('div');
+                body.className = 'category-body';
+                
+                let categoryScore = 0;
+                let categoryWeight = 0;
+                
+                items.forEach(item => {
+                    const scoreItem = document.createElement('div');
+                    scoreItem.className = 'score-item';
+                    
+                    const nameSpan = document.createElement('span');
+                    nameSpan.className = 'score-name';
+                    nameSpan.textContent = scoreLabels[item];
+                    
+                    const valueSpan = document.createElement('span');
+                    valueSpan.className = 'score-value';
+                    valueSpan.textContent = `${scores[item]}/${scoreWeights[item]}`;
+                    
+                    scoreItem.appendChild(nameSpan);
+                    scoreItem.appendChild(valueSpan);
+                    body.appendChild(scoreItem);
+                    
+                    categoryScore += scores[item];
+                    categoryWeight += scoreWeights[item];
+                });
+                
+                // 添加类别小计
+                const totalItem = document.createElement('div');
+                totalItem.className = 'score-item';
+                totalItem.style.fontWeight = 'bold';
+                totalItem.style.borderTop = '1px solid #ddd';
+                
+                const totalName = document.createElement('span');
+                totalName.className = 'score-name';
+                totalName.textContent = '小计';
+                
+                const totalValue = document.createElement('span');
+                totalValue.className = 'score-value';
+                totalValue.textContent = `${categoryScore}/${categoryWeight}`;
+                
+                totalItem.appendChild(totalName);
+                totalItem.appendChild(totalValue);
+                body.appendChild(totalItem);
+                
+                categoryDiv.appendChild(body);
+                scoreDetails.appendChild(categoryDiv);
+            }
+        }
+
+        // 导出Excel
+        function exportToExcel() {
+            const scores = calculateTotalScore();
+            let totalScore = 0;
+            let totalWeight = 0;
+            
+            for (const [key, score] of Object.entries(scores)) {
+                totalScore += score;
+                totalWeight += scoreWeights[key];
+            }
+            
+            const scoreRate = (totalScore / totalWeight * 100).toFixed(1);
+            
+            const formData = new FormData(document.getElementById('scoringForm'));
+            const data = Object.fromEntries(formData.entries());
+            
+            // 创建工作簿
+            const wb = XLSX.utils.book_new();
+            
+            // 创建评分详情工作表
+            const scoreDetails = [];
+            
+            // 添加表头
+            scoreDetails.push(['分类', '项目', '得分', '权重']);
+            
+            // 按类别分组添加数据
+            const categories = {
+                '基本概况': ['resident_population', 'income'],
+                '环境整治-三清理': ['lane_problems', 'surrounding_problems', 'ditch_problems'],
+                '环境整治-四整治': ['garbage_problems', 'sewage', 'toilet_problems', 'wire_problems'],
+                '村庄宜居': ['planning', 'house_control', 'house_style', 'greening', 'resource_protection'],
+                '服务配套': ['road', 'water', 'power'],
+                '文明乡风': ['village_rules', 'culture_space'],
+                '乡村治理': ['three_public', 'disaster_facility'],
+                '产业发展': ['industry', 'resource_activation', 'industry_service']
+            };
+            
+            const scoreLabels = {
+                resident_population: '常住人口比较',
+                income: '村集体经济收入',
+                lane_problems: '村内巷道',
+                surrounding_problems: '四旁五边',
+                ditch_problems: '沟渠池塘',
+                garbage_problems: '垃圾处理',
+                sewage: '污水处理',
+                toilet_problems: '厕所',
+                wire_problems: '管线规整',
+                planning: '规划引领',
+                house_control: '新建农房管控',
+                house_style: '农房风貌',
+                greening: '绿化美化',
+                resource_protection: '资源保护',
+                road: '道路',
+                water: '供水',
+                power: '供电',
+                village_rules: '村规民约',
+                culture_space: '乡村文化空间',
+                three_public: '三务公开',
+                disaster_facility: '减灾救灾',
+                industry: '特色产业',
+                resource_activation: '资源资产盘活',
+                industry_service: '产业服务'
+            };
+            
+            for (const [category, items] of Object.entries(categories)) {
+                scoreDetails.push([category, '', '', '']);
+                let categoryScore = 0;
+                let categoryWeight = 0;
+                
+                items.forEach(item => {
+                    scoreDetails.push(['', scoreLabels[item], scores[item], scoreWeights[item]]);
+                    categoryScore += scores[item];
+                    categoryWeight += scoreWeights[item];
+                });
+                
+                scoreDetails.push(['', '小计', categoryScore, categoryWeight]);
+                scoreDetails.push(['', '', '', '']);
+            }
+            
+            scoreDetails.push(['总计', '', totalScore, totalWeight]);
+            scoreDetails.push(['得分率', '', `${scoreRate}%`, '']);
+            
+            const ws1 = XLSX.utils.aoa_to_sheet(scoreDetails);
+            XLSX.utils.book_append_sheet(wb, ws1, "评分详情");
+            
+            // 创建基本信息工作表
+            const basicInfo = [
+                ['县（区）', data.county],
+                ['镇', data.town],
+                ['行政村', data.village],
+                ['自然村数', data.natural_villages],
+                ['村民小组数', data.villager_groups],
+                ['面积(k㎡)', data.area],
+                ['户籍人口', data.household_pop],
+                ['常住人口', data.resident_pop],
+                ['集体经济收入(万元)', data.income],
+                ['总得分', `${totalScore}/${totalWeight}`],
+                ['得分率', `${scoreRate}%`],
+                ['评价等级', document.getElementById('scoreGrade').textContent],
+                ['调查时间', new Date().toLocaleString()]
+            ];
+            
+            const ws2 = XLSX.utils.aoa_to_sheet(basicInfo);
+            XLSX.utils.book_append_sheet(wb, ws2, "基本信息");
+            
+            // 创建特色总结和问题反馈工作表
+            const summaryData = [
+                ['特色总结', data.feature_summary || ''],
+                ['阶段性问题反馈', data.problem_feedback || ''],
+                ['特色产业详细说明', data.industry_description || ''],
+                ['资源资产盘活详细说明', data.resource_activation_description || ''],
+                ['产业服务详细说明', data.industry_service_description || '']
+            ];
+            
+            const ws3 = XLSX.utils.aoa_to_sheet(summaryData);
+            XLSX.utils.book_append_sheet(wb, ws3, "总结与说明");
+            
+            // 导出Excel文件
+            XLSX.writeFile(wb, `${data.village}_督查调研_${new Date().toISOString().split('T')[0]}.xlsx`);
+            
+            alert('Excel文件已生成并下载');
+        }
+
+        // 图片上传功能
+        function handleImageUpload(input, category) {
+            const file = input.files[0];
+            if (!file) return;
+            
+            // 检查文件类型
+            if (!file.type.startsWith('image/')) {
+                alert('请上传图片文件！');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageUrl = e.target.result;
+                
+                // 保存图片数据
+                uploadedImages[category].push({
+                    url: imageUrl,
+                    name: file.name
+                });
+                
+                // 更新UI
+                updateImagePreview(input, imageUrl);
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function updateImagePreview(input, imageUrl) {
+            const container = input.parentElement;
+            container.innerHTML = '';
+            
+            const img = document.createElement('img');
+            img.src = imageUrl;
+            img.alt = '上传的图片';
+            
+            const removeBtn = document.createElement('button');
+            removeBtn.className = 'remove-btn';
+            removeBtn.innerHTML = '×';
+            removeBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                // 恢复上传框
+                container.innerHTML = `
+                    <input type="file" accept="image/*" class="image-upload-input" data-category="${input.dataset.category}">
+                    <div class="image-upload-icon">+</div>
+                `;
+                // 重新绑定事件
+                const newInput = container.querySelector('input');
+                newInput.addEventListener('change', function() {
+                    handleImageUpload(this, this.dataset.category);
+                });
+                
+                // 从存储中移除图片
+                const category = input.dataset.category;
+                const index = uploadedImages[category].findIndex(img => img.url === imageUrl);
+                if (index !== -1) {
+                    uploadedImages[category].splice(index, 1);
+                }
+            });
+            
+            container.appendChild(img);
+            container.appendChild(removeBtn);
+        }
+
+        // 事件监听
+        document.addEventListener('DOMContentLoaded', function() {
+            // 标签页切换
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // 更新标签页状态
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // 更新内容显示
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    document.getElementById(`${tabId}-tab`).classList.add('active');
+                });
+            });
+            
+            // 下一步按钮
+            document.querySelectorAll('.next-tab').forEach(button => {
+                button.addEventListener('click', function() {
+                    const nextTab = this.getAttribute('data-next');
+                    document.querySelector(`.tab[data-tab="${nextTab}"]`).click();
+                });
+            });
+            
+            // 上一步按钮
+            document.querySelectorAll('.prev-tab').forEach(button => {
+                button.addEventListener('click', function() {
+                    const prevTab = this.getAttribute('data-prev');
+                    document.querySelector(`.tab[data-tab="${prevTab}"]`).click();
+                });
+            });
+            
+            // 计算评分按钮
+            document.getElementById('calculateScore').addEventListener('click', function() {
+                const scores = calculateTotalScore();
+                displayScoreResults(scores);
+                document.querySelector('.tab[data-tab="result"]').click();
+            });
+            
+            // 重置表单按钮
+            document.getElementById('resetForm').addEventListener('click', function() {
+                if (confirm('确定要重新填写所有信息吗？')) {
+                    document.getElementById('scoringForm').reset();
+                    // 重置图片上传
+                    Object.keys(uploadedImages).forEach(category => {
+                        uploadedImages[category] = [];
+                    });
+                    // 重置图片预览
+                    document.querySelectorAll('.image-upload-item').forEach(item => {
+                        item.innerHTML = `
+                            <input type="file" accept="image/*" class="image-upload-input" data-category="${item.querySelector('input').dataset.category}">
+                            <div class="image-upload-icon">+</div>
+                        `;
+                        // 重新绑定事件
+                        const input = item.querySelector('input');
+                        input.addEventListener('change', function() {
+                            handleImageUpload(this, this.dataset.category);
+                        });
+                    });
+                    document.querySelector('.tab[data-tab="basic"]').click();
+                }
+            });
+            
+            // 导出结果按钮
+            document.getElementById('exportResult').addEventListener('click', exportToExcel);
+            
+            // 农房风貌进度条更新
+            document.getElementById('house_style_rate').addEventListener('input', function() {
+                document.getElementById('house_style_progress').style.width = `${this.value}%`;
+            });
+            
+            // 图片上传事件
+            document.querySelectorAll('.image-upload-input').forEach(input => {
+                input.addEventListener('change', function() {
+                    handleImageUpload(this, this.dataset.category);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
