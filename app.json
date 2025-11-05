@@ -1,0 +1,28 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/search/index",
+    "pages/scenery/list/index",
+    "pages/scenery/detail/index",
+    "pages/scenery/village/list/index",
+    "pages/scenery/main/main",
+    "pages/products/list/index",
+    "pages/products/detail/index",
+    "pages/customize/index/index",
+    "pages/operation/dashboard/index",
+    "pages/operation/calculator/calculator",
+    "pages/operation/ai-prediction/ai-prediction",
+    "pages/ai-service/index/index",
+    "pages/contact/index/index",
+    "pages/web-view/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "首页",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "backgroundTextStyle": "light",
+    "backgroundColor": "#f7f8fa"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
+}

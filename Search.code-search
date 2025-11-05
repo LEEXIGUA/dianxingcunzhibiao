@@ -1,0 +1,23 @@
+# Query: 游山玩水
+# Flags: RegExp
+# ContextLines: 1
+
+6 results - 5 files
+
+pages\index\index.wxml:
+  34            </view>
+  35:           <text class="nav-text">粤山悦水</text>
+  36          </view>
+
+pages\scenery\list\index.js:
+   50:       title: '游山玩水 - 景区景点'
+  192:       title: '粤乡村 - 游山玩水',
+
+pages\scenery\list\list.json:
+  2:   "navigationBarTitleText": "游山玩水",
+
+pages\scenery\main\main.json:
+  2:   "navigationBarTitleText": "游山玩水",
+
+pages\scenery\main\main.wxss:
+  1: /* 游山玩水主页面样式 */
